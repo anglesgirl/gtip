@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             pending.clear()
             pending.addAll(list)
         }
-        btnMode.text = if (quickMode) "模式：快速（${IpList.quickCount} 个）" else "模式：完整（${IpList.fullCount} 个）"
+        btnMode.text = if (quickMode) "模式：快速（${list.size} 个）" else "模式：完整（${list.size} 个）"
     }
 
     override fun onDestroy() {

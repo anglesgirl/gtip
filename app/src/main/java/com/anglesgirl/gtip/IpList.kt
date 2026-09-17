@@ -121,26 +121,34 @@ object IpList {
             }
             return out
         }
-        // /56..:/63（hostBits 65..72）：高 (hostBits-64) 位作为子段循环，
-        // 每个子段内用固定"活跃后缀"采样。例：2404:6800:4005:800::/56 → 256 个子段。
+        // /48..:/63（hostBits 65..80）：子段位 = 第 (prefix/16) 个 hextet 的
+        // 低 (16 - prefix%16) 位（如 /56 → 第 4 hextet 低 8 位，256 子段），
+        // 每个子段内再用固定"活跃后缀"采低 64 位。
+        // 关键坑：子段号是第 4 hextet 的【低位】，不是直接拼在 base 后面！
+        //   错误：base="2404:6800:4005:800" + sub=6 → "2404:6800:4005:8006"（不存在的段）
+        //   正确：第 4 hextet = 0x800 低 8 位置 6 → "2404:6800:4005:806" ✓
         // 为什么用固定后缀：谷歌活跃地址是 ::200e/::200d 这类低 64 位值
         // （用户实测 hkg12s11-in-x0e 的 PTR = 2404:6800:4005:806::200e），
         // 等差大跳采样全落在 ::0:0:0:0 子网地址上，一个都 ping 不通。
-        val subBits = hostBits - 64            // 8 → 256 个子段
+        val fixedHextets = prefix / 16                    // 完整固定的 hextet 数
+        val subBits = 16 - (prefix % 16)                  // 子段位宽
         val subs = 1L shl subBits
         val perSub = (max / subs).coerceAtLeast(1)
+        val parts = net.split(":").filter { it.isNotEmpty() }
+        val head = parts.take(fixedHextets).joinToString(":")
+        val h4 = parts.getOrNull(fixedHextets)?.toIntOrNull(16) ?: 0
+        // 第 fixedHextets 个 hextet 高位的固定值（低 subBits 位留给子段）
+        val fixedHigh = if (subBits >= 16) 0L else ((h4.toLong() ushr subBits) shl subBits)
         // 低 64 位活跃后缀候选（覆盖常见主机位；不足 perSub 时再补等差）
         val suffixes = longArrayOf(
             0x1L, 0x100L, 0x200L, 0x1000L, 0x2000L, 0x200eL, 0x200dL, 0x2010L,
             0x2020L, 0x3000L, 0x4000L, 0x5000L, 0x8000L, 0xa000L, 0xc000L, 0xe000L,
         )
         val out = ArrayList<String>(minOf(max, (subs * perSub).toInt()))
-        val base = net.removeSuffix("::")
         for (sub in 0 until subs) {
             if (out.size >= max) break
-            // 子段号拼进 base 的最后一个 hextet（如 :80 → :80XX）
-            val subHex = sub.toString(16)
-            val subBase = "$base$subHex"
+            val h4v = fixedHigh or sub
+            val subBase = if (head.isEmpty()) h4v.toString(16) else "$head:${h4v.toString(16)}"
             var i = 0
             while (i < perSub) {
                 if (out.size >= max) break
