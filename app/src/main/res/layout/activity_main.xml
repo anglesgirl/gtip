@@ -131,14 +131,33 @@
             android:backgroundTint="@color/g_card" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnProto"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="测法：H3（点按切换）"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="@color/g_card" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnRegion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="范围：全部（点按切换）"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnProto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="测法：H3（点按切换）"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

@@ -28,6 +28,26 @@ object IpList {
         "2404:6800:4005:800::/56",     // GWS v6 香港 hkg（2404:6800:4005:806::200e 实测域名 hkg12s11-in-x0e）
     )
 
+    /**
+     * 按地区分组扫描（GWS IPv6，官方 Public DNS 地理位置段）：
+     * - 香港 hkg：2404:6800:4005::/48（实测活跃 :806::200e，PTR hkg12s11-in-x0e）
+     * - 日本：kix 关西 2404:6800:400a:1xxx::/61-/62 + nrt 成田 2404:6800:400b:c0xx::/60-/62
+     * - 新加坡 sin：2404:6800:4003::/48
+     * 单独选地区 = 只扫该地区段；选"全部" = 扫上面 scanRanges 全集。
+     */
+    val regionRanges: LinkedHashMap<String, List<String>> = linkedMapOf(
+        "香港" to listOf("2404:6800:4005:800::/56"),
+        "日本" to listOf(
+            "2404:6800:400a:1000::/62",
+            "2404:6800:400a:1004::/62",
+            "2404:6800:400a:1008::/61",
+            "2404:6800:400b:c000::/62",
+            "2404:6800:400b:c004::/62",
+            "2404:6800:400b:c010::/60",
+        ),
+        "新加坡" to listOf("2404:6800:4003::/48"),
+    )
+
     /** 快速模式：每个段最多采样这么多地址。 */
     const val QUICK_PER_SEG = 4096
 
@@ -88,7 +108,7 @@ object IpList {
      */
     private fun expandV6(net: String, prefix: Int, max: Int): List<String> {
         val hostBits = 128 - prefix
-        if (hostBits < 0 || hostBits > 72) return emptyList()
+        if (hostBits < 0 || hostBits > 80) return emptyList()
         if (hostBits <= 64) {
             val total = if (hostBits >= 63) Long.MAX_VALUE else 1L shl hostBits
             val step = if (total > max) total / max else 1L
@@ -117,11 +137,13 @@ object IpList {
         val out = ArrayList<String>(minOf(max, (subs * perSub).toInt()))
         val base = net.removeSuffix("::")
         for (sub in 0 until subs) {
+            if (out.size >= max) break
             // 子段号拼进 base 的最后一个 hextet（如 :80 → :80XX）
             val subHex = sub.toString(16)
             val subBase = "$base$subHex"
             var i = 0
             while (i < perSub) {
+                if (out.size >= max) break
                 val n = if (i < suffixes.size) suffixes[i] else 0x200eL + i.toLong() * 0x100L
                 out.add(suffixV6(subBase, 64, n))
                 i++

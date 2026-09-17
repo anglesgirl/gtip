@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etManual: EditText
     private lateinit var btnStart: Button
     private lateinit var btnMode: Button
+    private lateinit var btnRegion: Button
     private lateinit var btnProto: Button
     private lateinit var btnFetch: Button
     private lateinit var btnCopyAll: Button
@@ -72,6 +73,9 @@ class MainActivity : AppCompatActivity() {
     /** 待测队列（CIDR 展开后的全部地址）。 */
     private val pending = mutableListOf<String>()
     private var quickMode = true
+    /** 地区选择：0=全部（scanRanges 全集），其余按 IpList.regionRanges 键名。 */
+    private var regionIdx = 0
+    private val regionNames = listOf("全部") + IpList.regionRanges.keys.toList()
 
     /** 测法：0=H3（QUIC 判定） 1=TCP（TLS+HTTP 判定） 2=混合（H3 失败自动补 TCP）。 */
     private var protoMode = 0
@@ -137,6 +141,14 @@ class MainActivity : AppCompatActivity() {
             rebuildPending()
             updateCount()
         }
+        btnRegion = findViewById(R.id.btnRegion)
+        btnRegion.text = "范围：${regionNames[regionIdx]}（点按切换）"
+        btnRegion.setOnClickListener {
+            regionIdx = (regionIdx + 1) % regionNames.size
+            btnRegion.text = "范围：${regionNames[regionIdx]}（点按切换）"
+            rebuildPending()
+            updateCount()
+        }
         btnProto = findViewById(R.id.btnProto)
         btnProto.text = "测法：${protoNames[protoMode]}（点按切换）"
         btnProto.setOnClickListener {
@@ -161,10 +173,15 @@ class MainActivity : AppCompatActivity() {
         updateCount()
     }
 
-    /** 按当前模式展开原版扫描范围（CIDR 段）。 */
+    /** 按当前模式+地区展开扫描范围（CIDR 段）。 */
     private fun rebuildPending() {
         val maxPerSeg = if (quickMode) IpList.QUICK_PER_SEG else Int.MAX_VALUE
-        val list = IpList.scanRanges.flatMap { IpList.expandCidr(it, maxPerSeg) }
+        val ranges = if (regionIdx == 0) {
+            IpList.scanRanges
+        } else {
+            IpList.regionRanges[regionNames[regionIdx]] ?: IpList.scanRanges
+        }
+        val list = ranges.flatMap { IpList.expandCidr(it, maxPerSeg) }
         synchronized(pending) {
             pending.clear()
             pending.addAll(list)
