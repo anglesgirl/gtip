@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/g_bg"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="HTTP/3 域名匹配测速：translate.googleapis.com"
+        android:textColor="@color/g_text"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/g_text_dim"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="▶ 开始扫描"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_acc" />
+
+        <Button
+            android:id="@+id/btnMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="模式"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+
+        <Button
+            android:id="@+id/btnFetch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="拉取在线 IP"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etManual"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:hint="手动添加 IP（逗号/空格/换行分隔）"
+            android:textColor="@color/g_text"
+            android:textColorHint="@color/g_text_dim"
+            android:background="@drawable/bg_input"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnAddManual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="添加"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+
+        <Button
+            android:id="@+id/btnTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单测"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnChina"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="扫云厂商 IP"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+
+        <Button
+            android:id="@+id/btnCopyAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="复制可用 IP"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清空结果"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/g_card" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnProto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="测法：H3（点按切换）"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/g_card" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="结果（按延迟排序，绿色=可用，点击复制单个）"
+        android:textColor="@color/g_text_dim"
+        android:textSize="12sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvResults"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
+
+</LinearLayout>

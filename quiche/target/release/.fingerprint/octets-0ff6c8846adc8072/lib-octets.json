@@ -1,0 +1,1 @@
+{"rustc":1625334936438085654,"features":"[]","declared_features":"[\"huffman_hpack\"]","target":1350530653079076558,"profile":7788517277772504472,"path":17804617383147185306,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/octets-0ff6c8846adc8072/dep-lib-octets","checksum":false}}],"rustflags":[],"config":9396254390672932401,"compile_kind":0}

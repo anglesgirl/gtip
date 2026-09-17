@@ -1,0 +1,23 @@
+[package]
+name = "gtip_quic"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "gtip_quic"
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21"
+quiche = "0.23"
+serde_json = "1"
+
+# 本地 vendor 的 quiche（增加 connect_with_dcid：客户端 Initial 携带随机 DCID，
+# 修复 Google 服务器丢弃空 DCID 导致握手无响应的问题）
+[patch.crates-io]
+quiche = { path = "../quiche-vendor" }
+
+[profile.release]
+lto = true
+opt-level = "s"
+panic = "abort"

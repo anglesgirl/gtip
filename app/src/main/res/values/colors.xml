@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.GTip" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/g_bg</item>
+    </style>
+
+    <color name="g_bg">#0F172A</color>
+    <color name="g_card">#1E293B</color>
+    <color name="g_text">#E2E8F0</color>
+    <color name="g_text_dim">#94A3B8</color>
+    <color name="g_ok">#4ADE80</color>
+    <color name="g_bad">#F87171</color>
+    <color name="g_acc">#38BDF8</color>
+</resources>
